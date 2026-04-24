@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>🐉 Dragon IRL Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0805;--panel:#13100a;--panel2:#181208;--border:#3a2e1a;
+  --gold:#c8a84b;--gold-l:#f0d080;--gold-d:#8a6020;
+  --red:#c04030;--green:#50a040;--blue:#4080c0;--purple:#8060c0;
+  --text:#e8dcc8;--muted:#806040;--subtle:#1e180a;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'IM Fell English',serif;font-size:15px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+input,textarea,select{background:#150f08;border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:5px;font-family:'IM Fell English',serif;font-size:14px;outline:none;width:100%;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+button{cursor:pointer;border:none;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.5px;transition:all .2s;border-radius:5px}
+.btn-gold{background:linear-gradient(135deg,#6a4510,#c8a84b,#6a4510);color:#0a0805;padding:10px 22px;font-weight:700}
+.btn-gold:hover{filter:brightness(1.15);transform:translateY(-1px)}.btn-gold:active{transform:none}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px 18px}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:#5a1010;color:#ffaaaa;padding:8px 14px;border:1px solid #7a2020}
+.btn-danger:hover{background:#7a1010}
+.btn-blue{background:#182840;color:#90b8e0;padding:8px 14px;border:1px solid #204060}
+.btn-blue:hover{background:#1e3050}
+.btn-sm{padding:5px 11px;font-size:11px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:18px}
+.panel2{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:18px}
+.ptitle{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.xp-badge{background:linear-gradient(135deg,#2a1800,#4a3008);border:1px solid var(--gold);color:var(--gold-l);padding:2px 9px;border-radius:12px;font-size:11px;font-family:'Cinzel',serif;white-space:nowrap}
+.badge{padding:3px 9px;border-radius:12px;font-size:10px;font-family:'Cinzel',serif;font-weight:600;white-space:nowrap}
+.badge-pending{background:#2a2000;border:1px solid #806020;color:#c0a040}
+.badge-approved{background:#0a2a0a;border:1px solid #208020;color:#40c040}
+.badge-rejected{background:#2a0a0a;border:1px solid #802020;color:#c04040}
+.badge-guild{background:#3a2800;border:1px solid var(--gold);color:var(--gold-l)}
+.badge-light{background:#1a1a2a;border:1px solid #8080d0;color:#b0b0f0}
+.badge-dark{background:#200a20;border:1px solid #802080;color:#d080d0}
+.badge-noble{background:#2a1800;border:1px solid #c08020;color:#e0b040}
+.badge-roi{background:linear-gradient(135deg,#3a2000,#6a4010);border:1px solid var(--gold);color:var(--gold-l)}
+.quest-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--subtle)}
+.quest-row:last-child{border-bottom:none}
+.chk{width:24px;height:24px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s;font-size:14px;user-select:none}
+.chk.on{background:var(--gold);border-color:var(--gold);color:#0a0805}
+.chk.disabled{opacity:.4;cursor:not-allowed}
+.stat-bar{background:#150f08;border-radius:10px;height:8px;overflow:hidden;flex:1}
+.stat-fill{height:100%;border-radius:10px;transition:width .5s}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px);padding:14px}
+.modal{background:#130e08;border:1px solid var(--gold);border-radius:8px;padding:24px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto}
+.tab{padding:10px 15px;border-bottom:2px solid transparent;cursor:pointer;color:var(--muted);font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;transition:all .2s;white-space:nowrap;user-select:none}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}.tab:hover{color:var(--gold-l)}
+.card-pick{border:2px solid var(--border);border-radius:8px;padding:12px 8px;cursor:pointer;transition:all .2s;text-align:center}
+.card-pick:hover,.card-pick.sel{background:rgba(255,255,255,.03)}
+.notif{position:fixed;top:16px;right:16px;background:#130e08;border:1px solid var(--gold);color:var(--gold-l);padding:11px 20px;border-radius:7px;z-index:200;animation:sIn .3s ease;font-family:'Cinzel',serif;font-size:12px;max-width:300px;pointer-events:none;line-height:1.5}
+@keyframes sIn{from{transform:translateX(110px);opacity:0}to{transform:none;opacity:1}}
+.lbar-out{background:#150f08;border-radius:10px;height:10px;overflow:hidden;border:1px solid var(--border)}
+.lbar-in{height:100%;border-radius:10px;transition:width .6s}
+.hidden{display:none!important}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.discord-box{background:#1a1f36;border:1px solid #5865F2;border-radius:8px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.group-card{border-radius:8px;padding:14px;border:1px solid;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div id="notif" class="notif hidden"></div>
+
+<!-- ═══ LOADING ═══ -->
+<div id="view-loading" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:24px;text-shadow:0 0 28px #c8a84b55">🐉 Dragon IRL Quest</div>
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:11px;font-family:'Cinzel',serif;letter-spacing:2px">CONNEXION AU SERVEUR…</div>
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="view-login" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:20px;background:radial-gradient(ellipse at center,#1a1005 0%,var(--bg) 70%)">
+  <div style="text-align:center">
+    <div style="font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:28px;text-shadow:0 0 30px #c8a84b55;margin-bottom:6px">🐉 Dragon IRL Quest</div>
+    <div style="color:var(--muted);font-size:10px;font-family:'Cinzel',serif;letter-spacing:3px">SYSTÈME DE QUÊTES RÉEL</div>
+  </div>
+  <div class="panel" style="max-width:360px;width:100%;border-color:#c8a84b44">
+    <div class="ptitle">Connexion</div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <input id="login-name" placeholder="Nom d'aventurier" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input id="login-pw" type="password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="btn-gold" id="btn-login" onclick="doLogin()">Entrer dans le Royaume</button>
+    </div>
+    <div style="text-align:center;margin-top:14px;font-size:13px">
+      <span style="color:var(--muted)">Nouveau héros ? </span>
+      <span style="color:var(--gold);cursor:pointer;font-family:'Cinzel',serif" onclick="showView('register')">Créer un compte</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REGISTER ═══ -->
+<div id="view-register" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:20px;background:radial-gradient(ellipse at center,#1a1005 0%,var(--bg) 70%)">
+  <div style="text-align:center">
+    <div style="font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:24px;text-shadow:0 0 30px #c8a84b55;margin-bottom:6px">🐉 Dragon IRL Quest</div>
+    <div style="color:var(--muted);font-size:10px;font-family:'Cinzel',serif;letter-spacing:3px">CRÉER UN AVENTURIER</div>
+  </div>
+  <div id="reg-container" style="max-width:720px;width:100%"></div>
+</div>
+
+<!-- ═══ PENDING ═══ -->
+<div id="view-pending" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:20px;background:radial-gradient(ellipse at center,#1a1005 0%,var(--bg) 70%)">
+  <div class="panel" style="max-width:440px;width:100%;text-align:center;border-color:#c8a84b44">
+    <div style="font-size:48px;margin-bottom:14px">📜</div>
+    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:10px">🐉 Dragon IRL Quest</div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:10px">En attente de validation</div>
+    <div style="color:var(--muted);font-size:13px;line-height:1.8;margin-bottom:16px">Ton compte est en attente d'approbation par un administrateur.<br>En attendant, rejoins le Discord pour créer ta fiche RP !</div>
+    <a href="https://discord.gg/mcTDzH9XWb" target="_blank" style="display:block;background:#1a1f36;border:1px solid #5865F2;border-radius:8px;padding:12px;color:#a0b0f0;text-decoration:none;font-family:'Cinzel',serif;font-size:12px;margin-bottom:16px">
+      💬 Rejoindre le Discord → discord.gg/mcTDzH9XWb
+    </a>
+    <button class="btn-ghost" style="width:100%" onclick="doLogout()">← Retour à l'accueil</button>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div id="view-main" class="hidden" style="min-height:100vh">
+  <div id="header" style="background:#0d0a06;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px">
+    <div style="font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:13px;text-shadow:0 0 18px #c8a84b44;white-space:nowrap">🐉 Dragon IRL Quest</div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <span id="hdr-avatar" style="font-size:18px"></span>
+      <span id="hdr-name" style="font-family:'Cinzel',serif;font-size:11px;color:var(--text)"></span>
+      <span id="hdr-badges"></span>
+      <span id="hdr-xp" class="xp-badge"></span>
+      <button class="btn-ghost btn-sm" onclick="doLogout()">Déco.</button>
+    </div>
+  </div>
+  <div id="tabs" style="display:flex;border-bottom:1px solid var(--border);background:#0d0a06;padding-left:6px;overflow-x:auto"></div>
+  <div style="max-width:880px;margin:0 auto;padding:16px 12px" id="content"></div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div id="overlay" class="overlay hidden" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-box"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  BACKEND: JSONBin.io – données partagées entre tous les PCs
+// ════════════════════════════════════════════════════════════
+// ⚠️  IMPORTANT : Va sur https://jsonbin.io
+//     1. Crée un compte gratuit
+//     2. Crée un BIN avec le contenu {} 
+//     3. Copie ton BIN ID et ta clé API ci-dessous
+const BIN_ID  = 'TON_BIN_ID_ICI';       // ex: 6843abc...
+const API_KEY = 'TON_API_KEY_ICI';      // ex: $2b$10$...
+
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const HEADERS  = {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Meta':'false'};
+
+let DB = null; // in-memory cache
+
+async function dbLoad(){
+  try{
+    const r=await fetch(BASE_URL,{headers:HEADERS});
+    if(!r.ok)throw new Error('fetch failed');
+    DB=await r.json();
+    if(!DB||typeof DB!=='object')DB={};
+  }catch(e){
+    // Fallback to localStorage if JSONBin not configured
+    const ls=localStorage.getItem('dragon_irl_db');
+    DB=ls?JSON.parse(ls):{};
+    console.warn('JSONBin non configuré, utilisation du localStorage local.');
+  }
+  if(!DB.users)DB.users={};
+  if(!DB.requests)DB.requests=[];
+  if(!DB.election)DB.election={votes:{},candidates:[],mayorId:null,mayorEnd:0,lastElection:0,phase:'idle'};
+  if(!DB.pvpLog)DB.pvpLog=[];
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  ensureAdmin();
+}
+
+async function dbSave(){
+  localStorage.setItem('dragon_irl_db',JSON.stringify(DB)); // always local backup
+  try{
+    await fetch(BASE_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(DB)});
+  }catch(e){console.warn('JSONBin save failed, data saved locally only.');}
+}
+
+function ensureAdmin(){
+  if(!DB.users['admin']){
+    DB.users['admin']={id:'admin',name:'admin',password:'admin123',role:'admin',
+      class:'chevalier',race:'homme',avatar:'👑',xp:0,statPoints:0,
+      extraStats:{combat:0,defense:0,dexterite:0,magie:0,furtivite:0,charisme:0},
+      exceptions:3,dailyLog:{},createdAt:Date.now()-999*864e5,status:'active',pvpCooldown:0,pvpMalus:0};
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ════════════════════════════════════════════════════════════
+const AVATARS=['🧙','⚔️','🏹','🗡️','🔮','🛡️','🗝️','🎵','🐉','🦅','🐺','🦁','🌙','⭐','🔥','❄️','🌿','💀','👑','🎭','🦊','🦋','🌊','⚡'];
+const RACES={
+  elfe:{label:'Elfe',icon:'🌿',color:'#70c080',desc:'Grâce et sagesse ancestrale.',bonus:{magie:2,dexterite:1,furtivite:1}},
+  homme:{label:'Homme',icon:'🧑',color:'#c0a080',desc:'Adaptable et ambitieux.',bonus:{combat:1,defense:1,charisme:1,dexterite:1}},
+  demi_elfe:{label:'Demi-Elfe',icon:'🌙',color:'#a090d0',desc:'Entre deux mondes.',bonus:{magie:1,charisme:2,dexterite:1}},
+  nain:{label:'Nain',icon:'⛏️',color:'#d09040',desc:'Robuste et tenace.',bonus:{combat:1,defense:3,magie:-1}},
+};
+const CLASSES={
+  chevalier:{label:'Chevalier',icon:'⚔️',color:'#c8a84b',desc:'Guerrier noble, protecteur des faibles.',stats:{combat:5,defense:4,dexterite:2,magie:1,furtivite:1,charisme:2}},
+  samurai:{label:'Samouraï',icon:'🗡️',color:'#e05050',desc:'Maître de la lame, discipline absolue.',stats:{combat:6,defense:3,dexterite:3,magie:1,furtivite:2,charisme:1}},
+  mage:{label:'Mage',icon:'🔮',color:'#9070e0',desc:'Maître des arcanes.',stats:{combat:2,defense:1,dexterite:2,magie:6,furtivite:1,charisme:4}},
+  pretre:{label:'Prêtre',icon:'✝️',color:'#f0d080',desc:'Serviteur du divin.',stats:{combat:1,defense:3,dexterite:1,magie:5,furtivite:1,charisme:5}},
+  archer:{label:'Archer',icon:'🏹',color:'#60b040',desc:'Tireur d\'élite.',stats:{combat:4,defense:2,dexterite:5,magie:1,furtivite:3,charisme:2}},
+  voleur:{label:'Voleur',icon:'🗝️',color:'#8090b0',desc:'Ombre et ruse.',stats:{combat:3,defense:1,dexterite:5,magie:2,furtivite:6,charisme:3}},
+  barde:{label:'Barde',icon:'🎵',color:'#e08040',desc:'Conteur légendaire.',stats:{combat:2,defense:2,dexterite:3,magie:3,furtivite:2,charisme:6}},
+};
+const STAT_LABELS={combat:'⚔️ Combat',defense:'🛡️ Défense',dexterite:'🤸 Dextérité',magie:'✨ Magie',furtivite:'🌑 Furtivité',charisme:'👑 Charisme'};
+const NOBLE_RANKS={roi:{label:'Roi',icon:'👑',color:'#f0d040',bonus:0.20},duc:{label:'Duc',icon:'🏰',color:'#d0a030',bonus:0.12},comte:{label:'Comte',icon:'🗺️',color:'#b08020',bonus:0.08},baron:{label:'Baron',icon:'🛡️',color:'#906810',bonus:0.04}};
+const DAILY=[
+  {id:'sport',label:'20 min de sport (chronométré)',xp:3},
+  {id:'travail',label:'30 min de travail concentré',xp:3},
+  {id:'tache',label:'1 tâche concrète (ménage, admin…)',xp:3},
+  {id:'cours',label:'Aller en cours / au travail',xp:3},
+  {id:'pas',label:'6 000 pas minimum',xp:3},
+];
+const INTERM=[
+  {id:'sport60',label:'60 min de sport',xp:50},
+  {id:'travail120',label:'120 min de travail profond',xp:50},
+  {id:'lecture',label:'Lire 30 pages',xp:50},
+  {id:'revision',label:'1h de révision',xp:50},
+  {id:'messe_med',label:'Messe complète ou 30 min méditation',xp:50},
+];
+const SPIRIT=[
+  {id:'messe_dim',label:'Messe du dimanche / prière hebdo',xp:25},
+  {id:'priere',label:'20 min de prière',xp:25},
+  {id:'charite',label:'Acte de charité',xp:25},
+];
+const MAJOR=[
+  {id:'examen',label:'Valider un examen',xp:200},
+  {id:'semestre',label:'Valider un semestre',xp:200},
+  {id:'30jours',label:'30 jours consécutifs de quêtes quotidiennes',xp:200},
+  {id:'physique',label:'Transformation physique suivie',xp:200},
+  {id:'projet',label:'Projet terminé',xp:200},
+];
+const LEGEND=[
+  {id:'diplome',label:'Obtenir un diplôme (CAP, BAC, BTS…)',xp:1000},
+  {id:'concours',label:'Réussir un concours',xp:1000},
+  {id:'transformation',label:'Transformation majeure de vie',xp:1000},
+  {id:'projet_lance',label:'Projet réel lancé publiquement',xp:1000},
+];
+const LVLS=[0,100,250,450,700,1000,1400,1900,2500,3200,4000,5000];
+const DISCORD='https://discord.gg/mcTDzH9XWb';
+
+// ════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════
+function getLevel(xp){let l=1;for(let i=1;i<LVLS.length;i++){if(xp>=LVLS[i])l=i+1;else break;}return l;}
+function getLvlProg(xp){const l=getLevel(xp);const c=LVLS[l-1]||0;const n=LVLS[l]||LVLS[LVLS.length-1];return{l,c,n,pct:Math.min(100,Math.round((xp-c)/(n-c)*100))};}
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function weekKey(){const d=new Date();const jan=new Date(d.getFullYear(),0,1);return `${d.getFullYear()}-W${Math.ceil(((d-jan)/864e5+jan.getDay()+1)/7)}`;}
+function statPts(xp){return Math.floor(xp/30);}
+function ageDays(ts){return Math.floor((Date.now()-ts)/864e5);}
+function getTotalStats(u){
+  const cls=CLASSES[u.class]||{stats:{}};const race=RACES[u.race]||{bonus:{}};const extra=u.extraStats||{};
+  const res={};
+  for(const s of Object.keys(STAT_LABELS))res[s]=Math.max(0,(cls.stats[s]||0)+(race.bonus[s]||0)+(extra[s]||0));
+  return res;
+}
+function getXPBonus(uid){
+  const g=DB.groups||{};let bonus=0;
+  if(g.guildMaster===uid)bonus=Math.max(bonus,0.30);
+  const rank=g.nobles?.[uid];if(rank&&NOBLE_RANKS[rank])bonus=Math.max(bonus,NOBLE_RANKS[rank].bonus);
+  if((g.lumiere||[]).includes(uid))bonus=Math.max(bonus,0.20);
+  if((g.tenebres||[]).includes(uid))bonus=Math.max(bonus,0.20);
+  return bonus;
+}
+function applyBonus(xp,uid){return Math.round(xp*(1+getXPBonus(uid)));}
+function calcStreak(dl){
+  let s=0,d=new Date();
+  while(true){const k=d.toISOString().slice(0,10);if(!DAILY.every(q=>(dl[k]||{})[q.id]))break;s++;d.setDate(d.getDate()-1);}
+  return s;
+}
+function getMayor(){const el=DB.election;if(el?.mayorId&&Date.now()<el.mayorEnd)return el.mayorId;return null;}
+function tickElection(){
+  const el=DB.election;const now=Date.now();
+  if(el.phase==='idle'&&(now-el.lastElection)>30*864e5){el.phase='nominate';el.nominateEnd=now+3*864e5;el.candidates=[];el.votes={};}
+  if(el.phase==='nominate'&&el.nominateEnd&&now>el.nominateEnd){el.phase='vote';el.voteEnd=now+2*864e5;}
+  if(el.phase==='vote'&&el.voteEnd&&now>el.voteEnd){
+    const counts={};Object.values(el.votes).forEach(c=>{counts[c]=(counts[c]||0)+1;});
+    let w=null,mx=0;Object.entries(counts).forEach(([c,n])=>{if(n>mx){mx=n;w=c;}});
+    el.mayorId=w;el.mayorEnd=now+30*864e5;el.phase='idle';el.lastElection=now;
+  }
+}
+function getUserBadges(uid){
+  const g=DB.groups||{};const badges=[];
+  if(g.guildMaster===uid)badges.push({text:'⚜️ Maître de Guilde',cls:'badge-guild'});
+  const rank=g.nobles?.[uid];if(rank&&NOBLE_RANKS[rank]){const r=NOBLE_RANKS[rank];badges.push({text:`${r.icon} ${r.label}`,cls:'badge-noble'});}
+  if((g.lumiere||[]).includes(uid))badges.push({text:'✨ Ordre de Lumière',cls:'badge-light'});
+  if((g.tenebres||[]).includes(uid))badges.push({text:'🌑 Disciples des Ténèbres',cls:'badge-dark'});
+  return badges;
+}
+
+// ════════════════════════════════════════════════════════════
+//  APP STATE
+// ════════════════════════════════════════════════════════════
+let currentUserId=null,currentTab='quests',pendingRequest=null;
+let regData={step:1,name:'',pw:'',race:null,cls:null,avatar:null};
+
+// ════════════════════════════════════════════════════════════
+//  NOTIFY
+// ════════════════════════════════════════════════════════════
+function notify(msg,color='#c8a84b'){
+  const n=document.getElementById('notif');
+  n.innerHTML=msg;n.style.borderColor=color;n.style.color=color;
+  n.classList.remove('hidden');clearTimeout(n._t);
+  n._t=setTimeout(()=>n.classList.add('hidden'),3500);
+}
+
+// ════════════════════════════════════════════════════════════
+//  VIEWS
+// ════════════════════════════════════════════════════════════
+function showView(v){
+  ['loading','login','register','main','pending'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden'));
+  document.getElementById('view-'+v).classList.remove('hidden');
+  if(v==='register'){regData={step:1,name:'',pw:'',race:null,cls:null,avatar:null};renderRegStep();}
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+async function init(){
+  showView('loading');
+  await dbLoad();
+  showView('login');
+}
+window.addEventListener('DOMContentLoaded',init);
+
+// ════════════════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════════════════
+async function doLogin(){
+  const name=document.getElementById('login-name').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const btn=document.getElementById('btn-login');
+  btn.disabled=true;btn.textContent='Connexion…';
+  await dbLoad(); // always refresh from server
+  btn.disabled=false;btn.textContent='Entrer dans le Royaume';
+  const u=Object.values(DB.users).find(u=>u.name.toLowerCase()===name.toLowerCase());
+  if(!u)return notify('Aventurier introuvable.','#c04030');
+  if(u.password!==pw)return notify('Mot de passe incorrect.','#c04030');
+  if(u.status==='banned')return notify('Ce compte est banni.','#c04030');
+  currentUserId=u.id;
+  tickElection();
+  if(u.status==='pending'){showView('pending');return;}
+  currentTab=(u.role==='admin')?'admin_pending':'quests';
+  showView('main');renderMain();
+}
+function doLogout(){currentUserId=null;showView('login');}
+
+// ════════════════════════════════════════════════════════════
+//  REGISTER WIZARD
+// ════════════════════════════════════════════════════════════
+function renderRegStep(){
+  const c=document.getElementById('reg-container');
+  if(regData.step===1)c.innerHTML=`
+    <div class="panel" style="border-color:#c8a84b44">
+      <div class="discord-box">
+        <div style="font-size:28px">💬</div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:12px;color:#a0b0f0;margin-bottom:4px">Discord Obligatoire</div>
+          <div style="font-size:12px;color:#7080b0;margin-bottom:6px">Rejoins le Discord et crée ta fiche RP avant de jouer !</div>
+          <a href="${DISCORD}" target="_blank" style="color:#5865F2;font-size:12px;font-family:'Cinzel',serif">${DISCORD}</a>
+        </div>
+      </div>
+      <div class="ptitle">Étape 1 — Identité</div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <input id="rn" placeholder="Nom d'aventurier" value="${regData.name}"/>
+        <input id="rp" type="password" placeholder="Mot de passe (min 4 caractères)"/>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)">
+          <input type="checkbox" id="rp-discord" style="width:auto;padding:0"/> J'ai rejoint le Discord et créé ma fiche RP
+        </label>
+        <button class="btn-gold" onclick="regNext1()">Choisir sa race →</button>
+        <button class="btn-ghost" onclick="showView('login')">← Retour</button>
+      </div>
+    </div>`;
+  else if(regData.step===2)c.innerHTML=`
+    <div class="panel" style="border-color:#c8a84b44">
+      <div class="ptitle">Étape 2 — Race — définitive</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px">
+        ${Object.entries(RACES).map(([k,r])=>`
+          <div class="card-pick${regData.race===k?' sel':''}" style="border-color:${regData.race===k?r.color:'var(--border)'}" onclick="regData.race='${k}';renderRegStep()">
+            <div style="font-size:24px;margin-bottom:5px">${r.icon}</div>
+            <div style="font-family:'Cinzel',serif;font-size:11px;color:${regData.race===k?r.color:'var(--text)'};margin-bottom:3px">${r.label}</div>
+            <div style="font-size:10px;color:var(--muted);line-height:1.4;margin-bottom:5px">${r.desc}</div>
+            <div style="font-size:10px;color:${r.color}">${Object.entries(r.bonus).map(([s,v])=>`${v>0?'+':''}${v} ${s}`).join(' · ')}</div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="regData.step=1;renderRegStep()">← Retour</button>
+        <button class="btn-gold" style="flex:1" onclick="regData.step=3;renderRegStep()" ${!regData.race?'disabled':''}>Choisir sa classe →</button>
+      </div>
+    </div>`;
+  else if(regData.step===3)c.innerHTML=`
+    <div class="panel" style="border-color:#c8a84b44">
+      <div class="ptitle">Étape 3 — Classe — définitive</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:14px">
+        ${Object.entries(CLASSES).map(([k,cl])=>`
+          <div class="card-pick${regData.cls===k?' sel':''}" style="border-color:${regData.cls===k?cl.color:'var(--border)'}" onclick="regData.cls='${k}';renderRegStep()">
+            <div style="font-size:22px;margin-bottom:4px">${cl.icon}</div>
+            <div style="font-family:'Cinzel',serif;font-size:11px;color:${regData.cls===k?cl.color:'var(--text)'};margin-bottom:3px">${cl.label}</div>
+            <div style="font-size:10px;color:var(--muted);line-height:1.3">${cl.desc}</div>
+          </div>`).join('')}
+      </div>
+      ${regData.cls&&regData.race?miniStats(regData.cls,regData.race):''}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn-ghost" onclick="regData.step=2;renderRegStep()">← Retour</button>
+        <button class="btn-gold" style="flex:1" onclick="regData.step=4;renderRegStep()" ${!regData.cls?'disabled':''}>Choisir un avatar →</button>
+      </div>
+    </div>`;
+  else if(regData.step===4)c.innerHTML=`
+    <div class="panel" style="border-color:#c8a84b44">
+      <div class="ptitle">Étape 4 — Avatar</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px">
+        ${AVATARS.map(a=>`<div onclick="regData.avatar='${a}';renderRegStep()" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:2px solid ${regData.avatar===a?'var(--gold)':'var(--border)'};background:${regData.avatar===a?'#3a2000':'#150f08'};transition:all .2s">${a}</div>`).join('')}
+      </div>
+      <div style="background:#1a1a0a;border:1px solid #5865F2;border-radius:7px;padding:12px;margin-bottom:14px;font-size:12px;color:#8090b0;line-height:1.7">
+        ⚠️ <span style="color:#a0b0f0;font-family:'Cinzel',serif">Rappel :</span> Crée ta fiche RP sur le Discord avant de commencer à jouer.<br>
+        <a href="${DISCORD}" target="_blank" style="color:#5865F2">${DISCORD}</a>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="regData.step=3;renderRegStep()">← Retour</button>
+        <button class="btn-gold" style="flex:1" onclick="doRegister()" ${!regData.avatar?'disabled':''}>Créer mon aventurier ⚔️</button>
+      </div>
+    </div>`;
+}
+function miniStats(clsKey,raceKey){
+  const cl=CLASSES[clsKey],race=RACES[raceKey]||{bonus:{}};
+  return `<div style="background:#0d0905;border:1px solid ${cl.color}44;border-radius:6px;padding:12px;margin-top:8px">
+    <div style="font-family:'Cinzel',serif;font-size:9px;color:${cl.color};margin-bottom:8px;letter-spacing:2px">STATS COMBINÉES</div>
+    ${Object.entries(STAT_LABELS).map(([s,l])=>{
+      const v=Math.max(0,(cl.stats[s]||0)+(race.bonus[s]||0));
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+        <span style="width:96px;font-size:11px;color:var(--muted)">${l}</span>
+        <div class="stat-bar"><div class="stat-fill" style="width:${Math.min(v/8*100,100)}%;background:${cl.color}"></div></div>
+        <span style="font-size:11px;font-family:'Cinzel',serif;width:16px;text-align:right">${v}</span>
+      </div>`;}).join('')}
+  </div>`;
+}
+function regNext1(){
+  const n=document.getElementById('rn').value.trim();
+  const p=document.getElementById('rp').value;
+  const disc=document.getElementById('rp-discord').checked;
+  if(!n)return notify('Entre ton nom !','#c04030');
+  if(p.length<4)return notify('Mot de passe trop court (min 4).','#c04030');
+  if(!disc)return notify('Tu dois confirmer avoir rejoint le Discord et créé ta fiche RP !','#c04030');
+  if(Object.values(DB.users).find(u=>u.name.toLowerCase()===n.toLowerCase()))return notify('Ce nom est déjà pris.','#c04030');
+  regData.name=n;regData.pw=p;regData.step=2;renderRegStep();
+}
+async function doRegister(){
+  if(!regData.race||!regData.cls||!regData.avatar)return;
+  const id='user_'+Date.now();
+  DB.users[id]={id,name:regData.name,password:regData.pw,role:'player',
+    class:regData.cls,race:regData.race,avatar:regData.avatar,
+    xp:0,statPoints:0,
+    extraStats:{combat:0,defense:0,dexterite:0,magie:0,furtivite:0,charisme:0},
+    exceptions:3,dailyLog:{},createdAt:Date.now(),status:'pending',pvpCooldown:0};
+  await dbSave();
+  currentUserId=id;
+  notify('Compte créé ! En attente de validation admin.','#c8a84b');
+  showView('pending');
+}
+
+// ════════════════════════════════════════════════════════════
+//  MAIN RENDER
+// ════════════════════════════════════════════════════════════
+function getUser(){return DB.users[currentUserId];}
+async function renderMain(){
+  await dbLoad(); // refresh data
+  tickElection();
+  const u=getUser();
+  if(!u||u.status==='banned'){doLogout();return;}
+  if(u.status==='pending'){showView('pending');return;}
+  const cls=CLASSES[u.class]||{icon:'?',color:'#888'};
+  const mayId=getMayor();
+  const badges=getUserBadges(currentUserId);
+  const bonus=getXPBonus(currentUserId);
+  document.getElementById('hdr-avatar').textContent=u.avatar||cls.icon;
+  document.getElementById('hdr-name').textContent=u.name+(bonus>0?` (+${Math.round(bonus*100)}% XP)`:'');
+  document.getElementById('hdr-badges').innerHTML=badges.slice(0,2).map(b=>`<span class="badge ${b.cls}" style="font-size:9px">${b.text}</span>`).join(' ');
+  document.getElementById('hdr-xp').textContent=u.xp.toLocaleString()+' XP';
+  const isAdmin=u.role==='admin';
+  const pendingUsers=Object.values(DB.users).filter(u=>u.status==='pending').length;
+  const pendingReqs=DB.requests.filter(r=>r.status==='pending').length;
+  const myPend=DB.requests.filter(r=>r.userId===currentUserId&&r.status==='pending').length;
+  const isRoi=DB.groups?.nobles?.[currentUserId]==='roi';
+
+  const tabs=isAdmin?[
+    {id:'admin_pending',label:`📋 Inscriptions${pendingUsers>0?` (${pendingUsers})`:''}` },
+    {id:'admin_requests',label:`📬 Demandes${pendingReqs>0?` (${pendingReqs})`:''}` },
+    {id:'admin_players',label:'⚔️ Joueurs'},
+    {id:'admin_groups',label:'🏰 Groupes'},
+    {id:'admin_election',label:'🗳️ Élection'},
+    {id:'profile',label:'🧙 Profil'},
+  ]:[
+    {id:'quests',label:'📜 Quêtes'},
+    {id:'profile',label:'🧙 Profil'},
+    {id:'players',label:'🌍 Royaume'},
+    {id:'pvp',label:'⚔️ PvP'},
+    {id:'election',label:'🗳️ Élection'},
+    {id:'groups',label:'🏰 Groupes'},
+    {id:'requests',label:`📬 Demandes${myPend>0?` (${myPend})`:''}` },
+    ...(isRoi?[{id:'nobles',label:'👑 Noblesse'}]:[]),
+  ];
+
+  const tabBar=document.getElementById('tabs');
+  tabBar.innerHTML='';
+  tabs.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='tab'+(currentTab===t.id?' active':'');
+    d.textContent=t.label;d.onclick=()=>{currentTab=t.id;renderMain();};
+    tabBar.appendChild(d);
+  });
+
+  const ct=document.getElementById('content');
+  if(currentTab==='quests')ct.innerHTML=renderQuests(u);
+  else if(currentTab==='profile')ct.innerHTML=renderProfile(u);
+  else if(currentTab==='players')ct.innerHTML=renderPlayers(u);
+  else if(currentTab==='pvp')ct.innerHTML=renderPvP(u);
+  else if(currentTab==='election')ct.innerHTML=renderElection(u);
+  else if(currentTab==='groups')ct.innerHTML=renderGroups(u);
+  else if(currentTab==='nobles')ct.innerHTML=renderNoblePanel(u);
+  else if(currentTab==='requests')ct.innerHTML=renderMyRequests(u);
+  else if(currentTab==='admin_pending')ct.innerHTML=renderAdminPending();
+  else if(currentTab==='admin_requests')ct.innerHTML=renderAdminRequests();
+  else if(currentTab==='admin_players')ct.innerHTML=renderAdminPlayers();
+  else if(currentTab==='admin_groups')ct.innerHTML=renderAdminGroups();
+  else if(currentTab==='admin_election')ct.innerHTML=renderAdminElection();
+  attachAll();
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUESTS
+// ════════════════════════════════════════════════════════════
+function renderQuests(u){
+  const today=todayKey();const week=weekKey();
+  const log=u.dailyLog?.[today]||{};
+  const dailyCount=DAILY.filter(q=>log[q.id]).length;
+  const intermDone=INTERM.some(q=>log[q.id]);
+  const spiritDoneThisWeek=SPIRIT.some(q=>(u.dailyLog?.[week]||{})[q.id]);
+  const bonus=getXPBonus(currentUserId);
+  const streak=calcStreak(u.dailyLog||{});
+
+  // Quest rows
+  const dailyRows=DAILY.map(q=>{
+    const checked=!!log[q.id];
+    const maxed=!checked&&dailyCount>=3;
+    const bonusXP=applyBonus(q.xp,currentUserId);
+    return `<div class="quest-row">
+      <div class="chk${checked?' on':''}${maxed?' disabled':''}" data-qid="${q.id}" data-xp="${q.xp}" data-type="daily">${checked?'✓':''}</div>
+      <div style="flex:1;font-size:14px;color:${checked?'var(--muted)':maxed?'#4a3820':'var(--text)'};text-decoration:${checked?'line-through':'none'}">${q.label}</div>
+      <span class="xp-badge">+${bonusXP} XP${bonus>0?` <span style="font-size:9px;color:var(--gold)">×${(1+bonus).toFixed(1)}</span>`:''}</span>
+    </div>`;
+  }).join('');
+
+  const intermRows=INTERM.map(q=>{
+    const checked=!!log[q.id];
+    const locked=!checked&&intermDone;
+    const bonusXP=applyBonus(q.xp,currentUserId);
+    return `<div class="quest-row">
+      <div class="chk${checked?' on':''}${locked?' disabled':''}" data-qid="${q.id}" data-xp="${q.xp}" data-type="interm">${checked?'✓':''}</div>
+      <div style="flex:1;font-size:14px;color:${checked?'var(--muted)':locked?'#4a3820':'var(--text)'};text-decoration:${checked?'line-through':'none'}">${q.label}${locked?' <span style="font-size:10px;color:#6a4820">(1/jour max)</span>':''}</div>
+      <span class="xp-badge">+${bonusXP} XP</span>
+    </div>`;
+  }).join('');
+
+  const spiritRows=SPIRIT.map(q=>{
+    const checked=!!(u.dailyLog?.[week]||{})[q.id];
+    const locked=!checked&&spiritDoneThisWeek;
+    const bonusXP=applyBonus(q.xp,currentUserId);
+    return `<div class="quest-row">
+      <div class="chk${checked?' on':''}${locked?' disabled':''}" data-qid="${q.id}" data-xp="${q.xp}" data-type="spirit">${checked?'✓':''}</div>
+      <div style="flex:1;font-size:14px;color:${checked?'var(--muted)':locked?'#4a3820':'var(--text)'};text-decoration:${checked?'line-through':'none'}">${q.label}${locked?' <span style="font-size:10px;color:#6a4820">(1/semaine)</span>':''}</div>
+      <span class="xp-badge">+${bonusXP} XP</span>
+    </div>`;
+  }).join('');
+
+  const majRows=MAJOR.map(q=>`<div class="quest-row">
+    <span style="font-size:15px;width:24px;text-align:center">🏆</span>
+    <div style="flex:1;font-size:14px">${q.label}</div>
+    <span class="xp-badge">+${q.xp} XP</span>
+    <button class="btn-gold btn-sm" onclick="openReqModal('${q.id}','${q.label.replace(/'/g,"\\'")}',${q.xp})">Demander</button>
+  </div>`).join('');
+
+  const legRows=LEGEND.map(q=>`<div class="quest-row">
+    <span style="font-size:15px;width:24px;text-align:center">👑</span>
+    <div style="flex:1;font-size:14px">${q.label}</div>
+    <span class="xp-badge">+${q.xp} XP</span>
+    <button class="btn-gold btn-sm" onclick="openReqModal('${q.id}','${q.label.replace(/'/g,"\\'")}',${q.xp})">Demander</button>
+  </div>`).join('');
+
+  return `
+    <div class="panel" style="margin-bottom:14px;background:linear-gradient(135deg,#1a1005,var(--bg));border-color:#c8a84b44">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px">AUJOURD'HUI — ${today}</div>
+          <div style="font-size:13px">Série : <span style="color:var(--gold);font-family:'Cinzel',serif">${streak} jour(s) 🔥</span></div>
+          ${bonus>0?`<div style="font-size:12px;color:var(--gold);margin-top:3px">Bonus actif : +${Math.round(bonus*100)}% XP 🌟</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:12px;color:var(--muted)">Quêtes quotidiennes : <span style="color:var(--gold)">${dailyCount}/3</span></div>
+          <div style="font-size:12px;color:var(--muted)">Intermédiaire : <span style="color:${intermDone?'var(--green)':'var(--gold)'}">${intermDone?'✅ Faite':'0/1'}</span></div>
+          <div style="font-size:12px;color:var(--muted)">Spirituelle sem. : <span style="color:${spiritDoneThisWeek?'var(--green)':'var(--gold)'}">${spiritDoneThisWeek?'✅ Faite':'0/1'}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:14px"><div class="ptitle">🪶 Quêtes Quotidiennes — 3 par jour max (+3 XP chacune)</div>${dailyRows}</div>
+    <div class="panel" style="margin-bottom:14px"><div class="ptitle">📘 Quêtes Intermédiaires — 1 par jour (+50 XP)</div>${intermRows}</div>
+    <div class="panel" style="margin-bottom:14px"><div class="ptitle">🕊️ Quêtes Spirituelles — 1 par semaine (+25 XP)</div>${spiritRows}</div>
+    <div class="panel" style="margin-bottom:14px"><div class="ptitle">🏆 Quêtes Majeures (+200 XP) — validation admin</div>${majRows}</div>
+    <div class="panel"><div class="ptitle">👑 Quêtes Légendaires (+1 000 XP) — validation admin</div>${legRows}</div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  PROFILE
+// ════════════════════════════════════════════════════════════
+function renderProfile(u){
+  const cls=CLASSES[u.class]||{stats:{},icon:'?',color:'#888',label:'?'};
+  const race=RACES[u.race]||{bonus:{},icon:'?',label:'?',color:'#888'};
+  const {l,c,n,pct}=getLvlProg(u.xp);
+  const pts=u.statPoints||0;
+  const mayId=getMayor();
+  const badges=getUserBadges(u.id);
+  const bonus=getXPBonus(u.id);
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:${cls.color}44;background:linear-gradient(135deg,#1a1005,var(--bg))">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="text-align:center;min-width:72px">
+          <div style="font-size:50px;filter:drop-shadow(0 0 12px ${cls.color})">${u.avatar||cls.icon}</div>
+          <div style="font-family:'Cinzel',serif;font-size:9px;color:${cls.color};margin-top:4px">${cls.label.toUpperCase()}</div>
+          <div style="font-family:'Cinzel',serif;font-size:9px;color:${race.color};margin-top:2px">${race.icon} ${race.label}</div>
+        </div>
+        <div style="flex:1;min-width:180px">
+          <div style="font-family:'Cinzel Decorative',cursive;font-size:18px;color:var(--gold-l);margin-bottom:4px">${u.name}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${badges.map(b=>`<span class="badge ${b.cls}">${b.text}</span>`).join('')}</div>
+          ${bonus>0?`<div style="font-size:12px;color:var(--gold);margin-bottom:6px">🌟 Bonus XP : +${Math.round(bonus*100)}%</div>`:''}
+          <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--muted);margin-bottom:10px">Niveau ${l} · ${u.xp.toLocaleString()} XP · ${ageDays(u.createdAt)}j d'ancienneté</div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px"><span>Niv.${l}</span><span>${u.xp-c}/${n-c} XP</span><span>Niv.${l+1}</span></div>
+          <div class="lbar-out"><div class="lbar-in" style="width:${pct}%;background:linear-gradient(90deg,${cls.color}88,${cls.color})"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ptitle" style="display:flex;justify-content:space-between">
+        <span>Statistiques</span>
+        ${pts>0?`<span style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px">${pts} pt(s) ✨</span>`:''}
+      </div>
+      ${Object.entries(STAT_LABELS).map(([s,label])=>{
+        const base=Math.max(0,(cls.stats[s]||0)+(race.bonus[s]||0));
+        const extra=u.extraStats?.[s]||0;const tot=Math.max(0,base+extra);
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+          <span style="width:110px;font-size:12px;color:var(--muted)">${label}</span>
+          <div class="stat-bar"><div class="stat-fill" style="width:${Math.min(tot/12*100,100)}%;background:linear-gradient(90deg,${cls.color}66,${cls.color})"></div></div>
+          <span style="font-size:12px;font-family:'Cinzel',serif;width:22px;text-align:right">${tot}</span>
+          ${extra>0?`<span style="font-size:10px;color:var(--gold);width:24px">+${extra}</span>`:'<span style="width:24px"></span>'}
+          ${pts>0?`<button class="btn-gold btn-sm" style="padding:3px 8px;font-size:10px" onclick="addStat('${s}')">+</button>`:''}
+        </div>`;}).join('')}
+      <div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic">+1 point de stat tous les 30 XP.</div>
+    </div>
+    <div class="panel" style="border-color:#1a1f3644">
+      <div class="ptitle">Rappel Discord</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">N'oublie pas de maintenir ta fiche RP à jour !</div>
+      <a href="${DISCORD}" target="_blank" class="btn-blue btn-sm" style="display:inline-block;text-decoration:none">💬 Discord — ${DISCORD}</a>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  PLAYERS (Kingdom)
+// ════════════════════════════════════════════════════════════
+function renderPlayers(me){
+  const players=Object.values(DB.users).filter(u=>u.status==='active'&&u.role!=='admin').sort((a,b)=>b.xp-a.xp);
+  const mayId=getMayor();
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:#c8a84b44;background:linear-gradient(135deg,#1a1005,var(--bg))">
+      <div class="ptitle">🌍 Le Royaume — ${players.length} aventurier(s)</div>
+      ${mayId?`<div style="font-size:13px;color:var(--gold);font-family:'Cinzel',serif">⚜️ Maître de Guilde : ${DB.users[mayId]?.name||'?'}</div>`:''}
+    </div>
+    ${players.map((p,i)=>{
+      const cls=CLASSES[p.class]||{color:'#888',icon:'?',label:'?'};
+      const race=RACES[p.race]||{icon:'?',label:'?'};
+      const {l}=getLvlProg(p.xp);
+      const badges=getUserBadges(p.id);
+      return `<div class="player-card" style="margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px;border-color:var(--border);background:var(--panel);border-radius:7px">
+        <span style="color:var(--muted);font-family:'Cinzel',serif;font-size:12px;width:22px">${i+1}</span>
+        <div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid ${cls.color}44;background:#150f08;flex-shrink:0">${p.avatar||cls.icon}</div>
+        <div style="flex:1;min-width:100px">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px">
+            <span style="font-family:'Cinzel',serif;font-size:12px">${p.name}</span>
+            ${badges.slice(0,2).map(b=>`<span class="badge ${b.cls}" style="font-size:9px">${b.text}</span>`).join('')}
+          </div>
+          <div style="font-size:11px;color:var(--muted)">${cls.icon} ${cls.label} · ${race.icon} ${race.label} · Niv.${l}</div>
+        </div>
+        <span class="xp-badge">${p.xp.toLocaleString()} XP</span>
+      </div>`;}).join('')}`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  PvP
+// ════════════════════════════════════════════════════════════
+function renderPvP(me){
+  const players=Object.values(DB.users).filter(u=>u.status==='active'&&u.role!=='admin'&&u.id!==me.id);
+  const log=DB.pvpLog.filter(l=>l.attackerId===me.id||l.defenderId===me.id).slice(0,12);
+  const now=Date.now();
+  const coolLeft=me.pvpCooldown&&me.pvpCooldown>now?Math.ceil((me.pvpCooldown-now)/60000):0;
+  const malusLeft=me.pvpMalus&&me.pvpMalus>now;
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:#c0403044;background:linear-gradient(135deg,#1a0505,var(--bg))">
+      <div class="ptitle" style="color:#c04030">⚔️ Système PvP</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:10px">
+        Attaque un aventurier pour tenter de lui voler des XP.<br>
+        En cas de défaite : <span style="color:#e06030">15% de malus XP pendant 1h</span>.<br>
+        Coup critique aléatoire : +20 à 50% des dégâts.
+      </div>
+      ${coolLeft>0?`<div style="color:#e06030;font-size:12px;font-family:'Cinzel',serif">⏱️ Cooldown : ${coolLeft} min restante(s)</div>`:
+        `<div style="color:var(--green);font-size:12px;font-family:'Cinzel',serif">✅ Prêt à attaquer</div>`}
+      ${malusLeft?`<div style="color:#e06030;font-size:12px;margin-top:4px">⚠️ Malus défaite actif : -15% XP jusqu'à ${new Date(me.pvpMalus).toLocaleTimeString('fr-FR')}</div>`:''}
+    </div>
+    ${players.length===0?`<div class="panel" style="text-align:center;padding:20px;color:var(--muted)">Aucun adversaire disponible.</div>`:`
+    <div class="panel" style="margin-bottom:14px">
+      <div class="ptitle">Choisir un adversaire</div>
+      ${players.map(p=>{
+        const cls=CLASSES[p.class]||{color:'#888',icon:'?',label:'?'};
+        const {l}=getLvlProg(p.xp);
+        return `<div class="quest-row">
+          <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid ${cls.color}44;background:#150f08;flex-shrink:0">${p.avatar||cls.icon}</div>
+          <div style="flex:1">
+            <div style="font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${cls.label} · Niv.${l} · ${p.xp.toLocaleString()} XP</div>
+          </div>
+          <button class="btn-danger btn-sm" ${coolLeft>0?'disabled':''} onclick="launchPvP('${p.id}')">⚔️ Attaquer</button>
+        </div>`;}).join('')}
+    </div>`}
+    ${log.length>0?`
+    <div class="panel"><div class="ptitle">Historique PvP</div>
+      ${log.map(l=>{
+        const won=l.attackerId===me.id?l.attackerWon:!l.attackerWon;
+        const opp=l.attackerId===me.id?l.defenderName:l.attackerName;
+        return `<div class="quest-row">
+          <span style="font-size:16px">${won?'🏆':'💀'}</span>
+          <div style="flex:1;font-size:13px">${l.attackerId===me.id?'Attaque':'Défense'} vs <b>${opp}</b>${l.critical?' <span style="color:#e08040;font-size:10px">CRIT!</span>':''}</div>
+          <span style="color:${won?'var(--green)':'var(--red)'};font-family:'Cinzel',serif;font-size:12px">${won?'+':''}${l.xpChange} XP</span>
+        </div>`;}).join('')}
+    </div>`:''}`;
+}
+
+async function launchPvP(targetId){
+  const users=DB.users;const me=users[currentUserId];const target=users[targetId];
+  if(!me||!target)return;
+  const now=Date.now();
+  if(me.pvpCooldown&&me.pvpCooldown>now)return notify('Cooldown actif !','#c04030');
+
+  const myStats=getTotalStats(me);const theirStats=getTotalStats(target);
+  const atk=myStats.combat+myStats.dexterite;const def=theirStats.defense;
+  const isCrit=Math.random()<0.20;
+  const critBonus=isCrit?(0.20+Math.random()*0.30):0;
+  const attackerWon=atk*(1+critBonus)>def*(0.8+Math.random()*0.4);
+  const xpSteal=Math.max(1,Math.min(Math.round((atk*2+critBonus*atk)*1.5),Math.floor(target.xp*0.05),50));
+
+  if(attackerWon){
+    me.xp=(me.xp||0)+xpSteal;
+    const old=target.xp;target.xp=Math.max(0,old-xpSteal);
+  } else {
+    // 15% malus for loser: reduce XP gains for 1h — store timestamp
+    me.pvpMalus=now+3600000;
+  }
+  me.pvpCooldown=now+3600000;
+
+  DB.pvpLog.unshift({id:'pvp_'+now,attackerId:me.id,attackerName:me.name,
+    defenderId:target.id,defenderName:target.name,
+    attackerWon,xpChange:attackerWon?xpSteal:-xpSteal,critical:isCrit,timestamp:now});
+  DB.pvpLog=DB.pvpLog.slice(0,100);
+  await dbSave();
+
+  document.getElementById('modal-box').innerHTML=`
+    <div style="text-align:center">
+      <div style="font-size:48px;margin-bottom:10px">${attackerWon?'🏆':'💀'}</div>
+      <div style="font-family:'Cinzel',serif;font-size:16px;color:${attackerWon?'var(--gold)':'var(--red)'};margin-bottom:8px">${attackerWon?'Victoire !':'Défaite !'}</div>
+      ${isCrit?`<div style="color:#e08040;font-family:'Cinzel',serif;font-size:13px;margin-bottom:8px">⚡ COUP CRITIQUE !</div>`:''}
+      <div style="font-size:14px;color:var(--text);margin-bottom:8px">
+        ${attackerWon?`Tu voles <span style="color:var(--gold);font-family:'Cinzel',serif">+${xpSteal} XP</span> à ${target.name}`
+          :`Défaite contre ${target.name}. Malus -15% XP pendant 1h.`}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Cooldown : 1 heure avant de pouvoir attaquer à nouveau.</div>
+      <button class="btn-gold" onclick="closeModal();renderMain()">Continuer</button>
+    </div>`;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+// ════════════════════════════════════════════════════════════
+//  ELECTION
+// ════════════════════════════════════════════════════════════
+function renderElection(u){
+  const el=DB.election;const now=Date.now();
+  const mayId=getMayor();
+  const age=ageDays(u.createdAt);
+  const canCand=age>=15&&el.phase==='nominate'&&!(el.candidates||[]).includes(u.id);
+  const hasVoted=!!(el.votes||{})[u.id];
+  const msNext=Math.max(0,30*864e5-(now-el.lastElection));
+
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:#c8a84b44;background:linear-gradient(135deg,#1a1a05,var(--bg))">
+      <div class="ptitle">🗳️ Maître de Guilde — Élections du Royaume</div>
+      ${mayId?`<div style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:6px">⚜️ Maître de Guilde en exercice : ${DB.users[mayId]?.name||'?'}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Le Maître de Guilde bénéficie de +30% XP sur toutes ses quêtes.</div>`:''}
+      <div style="font-size:13px;color:var(--muted)">Phase : <span style="color:var(--gold);font-family:'Cinzel',serif">${{idle:'En attente',nominate:'Candidatures ouvertes',vote:'Vote ouvert'}[el.phase]}</span></div>
+      ${el.phase==='idle'?`<div style="font-size:12px;color:var(--muted);margin-top:4px">Prochaine élection dans environ ${Math.ceil(msNext/864e5)} jour(s).</div>`:''}
+      ${age<15?`<div style="font-size:12px;color:var(--red);margin-top:8px">⚠️ 15 jours d'ancienneté requis pour voter ou se présenter. (${age}/15)</div>`:''}
+    </div>
+    ${el.phase==='nominate'?`<div class="panel" style="margin-bottom:14px">
+      <div class="ptitle">Candidatures</div>
+      ${(el.candidates||[]).length===0?`<div style="color:var(--muted);font-size:13px;margin-bottom:12px">Aucun candidat pour l'instant.</div>`:''}
+      ${(el.candidates||[]).map(cid=>{const p=DB.users[cid];return p?`<div class="quest-row"><span style="font-size:20px">${p.avatar||'?'}</span><div style="flex:1;font-family:'Cinzel',serif;font-size:13px">${p.name}</div></div>`:''}).join('')}
+      ${canCand&&age>=15?`<button class="btn-gold btn-sm" onclick="candidateSelf()" style="margin-top:10px">Me présenter comme candidat ⚜️</button>`:''}
+      ${(el.candidates||[]).includes(u.id)?`<div style="color:var(--green);font-size:12px;margin-top:8px">✅ Tu es candidat(e).</div>`:''}
+    </div>`:''}
+    ${el.phase==='vote'&&age>=15?`<div class="panel" style="margin-bottom:14px">
+      <div class="ptitle">Voter</div>
+      ${hasVoted?`<div style="color:var(--green);font-size:13px">✅ Vote enregistré. Résultats à la clôture.</div>`
+        :(el.candidates||[]).length===0?`<div style="color:var(--muted)">Aucun candidat.</div>`
+        :(el.candidates||[]).map(cid=>{const p=DB.users[cid];return p?`<div class="quest-row">
+          <span style="font-size:20px">${p.avatar||'?'}</span>
+          <div style="flex:1;font-family:'Cinzel',serif;font-size:13px">${p.name}</div>
+          <button class="btn-gold btn-sm" onclick="castVote('${cid}')">Voter</button>
+        </div>`:''}).join('')}
+    </div>`:''}`;
+}
+
+async function candidateSelf(){
+  const el=DB.election;const u=getUser();
+  if(ageDays(u.createdAt)<15)return notify('15 jours d\'ancienneté requis.','#c04030');
+  if(!el.candidates)el.candidates=[];
+  if(el.candidates.includes(u.id))return;
+  el.candidates.push(u.id);await dbSave();
+  notify('Tu es candidat(e) ! ⚜️','#c8a84b');renderMain();
+}
+async function castVote(cid){
+  const el=DB.election;const u=getUser();
+  if(ageDays(u.createdAt)<15)return notify('15 jours requis.','#c04030');
+  if(el.votes[u.id])return notify('Déjà voté.','#c04030');
+  el.votes[u.id]=cid;await dbSave();
+  notify('Vote enregistré ! 🗳️','#c8a84b');renderMain();
+}
+
+// ════════════════════════════════════════════════════════════
+//  GROUPS (player view)
+// ════════════════════════════════════════════════════════════
+function renderGroups(u){
+  const g=DB.groups||{};
+  const nobles=g.nobles||{};
+  const lumiere=g.lumiere||[];const tenebres=g.tenebres||[];
+  const getP=id=>DB.users[id];
+
+  const nobleList=Object.entries(nobles).filter(([id])=>DB.users[id]?.status==='active').sort((a,b)=>{
+    const order=['roi','duc','comte','baron'];return order.indexOf(a[1])-order.indexOf(b[1]);
+  });
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- NOBLESSE -->
+      <div class="group-card" style="border-color:#c8a84b55;background:linear-gradient(135deg,#1a1005,var(--panel))">
+        <div class="ptitle" style="color:#c8a84b">👑 Noblesse du Royaume</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">La noblesse gouverne le royaume. Chaque rang confère un bonus XP permanent.<br>
+          ${Object.entries(NOBLE_RANKS).map(([k,r])=>`<span style="color:${r.color}">${r.icon} ${r.label} +${Math.round(r.bonus*100)}%</span>`).join(' · ')}</div>
+        ${nobleList.length===0?`<div style="color:var(--muted);font-size:13px">Aucun noble pour l'instant.</div>`:''}
+        ${nobleList.map(([id,rank])=>{const p=getP(id);const r=NOBLE_RANKS[rank];return p?`
+          <div class="quest-row">
+            <span style="font-size:20px">${p.avatar||'?'}</span>
+            <div style="flex:1"><div style="font-family:'Cinzel',serif;font-size:12px">${p.name}</div></div>
+            <span class="badge badge-noble">${r.icon} ${r.label} +${Math.round(r.bonus*100)}%</span>
+          </div>`:''}).join('')}
+      </div>
+      <!-- ORDRE DE LUMIERE -->
+      <div class="group-card" style="border-color:#8080d055;background:linear-gradient(135deg,#0a0a1a,var(--panel))">
+        <div class="ptitle" style="color:#b0b0f0">✨ Ordre de Lumière</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Guerriers de la lumière. +20% XP sur toutes les quêtes.</div>
+        ${lumiere.length===0?`<div style="color:var(--muted);font-size:13px">Aucun membre.</div>`:''}
+        ${lumiere.map(id=>{const p=getP(id);return p?`
+          <div class="quest-row">
+            <span style="font-size:20px">${p.avatar||'?'}</span>
+            <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+            <span class="badge badge-light">✨ Lumière</span>
+          </div>`:''}).join('')}
+      </div>
+      <!-- DISCIPLES DES TENEBRES -->
+      <div class="group-card" style="border-color:#80208055;background:linear-gradient(135deg,#1a0520,var(--panel))">
+        <div class="ptitle" style="color:#d080d0">🌑 Disciples des Ténèbres</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Serviteurs des ombres. +20% XP sur toutes les quêtes.</div>
+        ${tenebres.length===0?`<div style="color:var(--muted);font-size:13px">Aucun membre.</div>`:''}
+        ${tenebres.map(id=>{const p=getP(id);return p?`
+          <div class="quest-row">
+            <span style="font-size:20px">${p.avatar||'?'}</span>
+            <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+            <span class="badge badge-dark">🌑 Ténèbres</span>
+          </div>`:''}).join('')}
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  NOBLE PANEL (Roi only)
+// ════════════════════════════════════════════════════════════
+function renderNoblePanel(u){
+  const g=DB.groups||{};const nobles=g.nobles||{};
+  const activePlayers=Object.values(DB.users).filter(u=>u.status==='active'&&u.role!=='admin');
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:#c8a84b55">
+      <div class="ptitle" style="color:#c8a84b">👑 Panneau Royal — Gestion de la Noblesse</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">En tant que Roi, tu peux accorder des titres de noblesse. Seul un admin peut les retirer.</div>
+      ${activePlayers.map(p=>{
+        const rank=nobles[p.id];const r=rank?NOBLE_RANKS[rank]:null;
+        return `<div class="quest-row">
+          <span style="font-size:20px">${p.avatar||'?'}</span>
+          <div style="flex:1">
+            <div style="font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+            ${r?`<span class="badge badge-noble">${r.icon} ${r.label}</span>`:'<span style="font-size:11px;color:var(--muted)">Roturier</span>'}
+          </div>
+          ${p.id!==currentUserId?`<select onchange="grantNobleRank('${p.id}',this.value)" style="width:auto;padding:4px 8px;font-size:11px">
+            <option value="">— Accorder un titre —</option>
+            ${Object.entries(NOBLE_RANKS).filter(([k])=>k!=='roi').map(([k,r])=>`<option value="${k}" ${rank===k?'selected':''}>${r.icon} ${r.label}</option>`).join('')}
+          </select>`:'<span style="font-size:11px;color:var(--gold)">Roi</span>'}
+        </div>`;}).join('')}
+    </div>`;
+}
+async function grantNobleRank(uid,rank){
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  if(rank)DB.groups.nobles[uid]=rank;
+  else delete DB.groups.nobles[uid];
+  await dbSave();notify('Titre accordé !','#c8a84b');renderMain();
+}
+
+// ════════════════════════════════════════════════════════════
+//  MY REQUESTS
+// ════════════════════════════════════════════════════════════
+function renderMyRequests(u){
+  const reqs=DB.requests.filter(r=>r.userId===u.id).sort((a,b)=>b.createdAt-a.createdAt);
+  if(!reqs.length)return `<div class="panel" style="text-align:center;padding:28px 0;color:var(--muted)">Aucune demande. Complète une quête majeure ou légendaire !</div>`;
+  return `<div class="panel"><div class="ptitle">Mes demandes</div>
+    ${reqs.map(r=>`<div style="border-bottom:1px solid var(--subtle);padding:12px 0">
+      <div style="display:flex;justify-content:space-between;gap:8px">
+        <div style="flex:1">
+          <div style="font-size:14px;margin-bottom:4px">${r.questLabel}</div>
+          ${r.note?`<div style="font-size:12px;color:var(--muted);font-style:italic">"${r.note}"</div>`:''}
+          ${r.adminNote?`<div style="font-size:12px;margin-top:4px;color:${r.status==='approved'?'var(--green)':'var(--red)'}">Admin : ${r.adminNote}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="badge badge-${r.status}">${r.status==='pending'?'⏳':r.status==='approved'?'✅':'❌'}</span>
+          <span class="xp-badge">+${r.xp} XP</span>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN: PENDING USERS
+// ════════════════════════════════════════════════════════════
+function renderAdminPending(){
+  const pending=Object.values(DB.users).filter(u=>u.status==='pending');
+  return `<div style="display:flex;flex-direction:column;gap:10px">
+    ${pending.length===0?`<div class="panel" style="text-align:center;padding:28px 0;color:var(--muted)">Aucune inscription en attente. ✅</div>`:''}
+    ${pending.map(u=>{
+      const cls=CLASSES[u.class]||{icon:'?',color:'#888',label:'?'};const race=RACES[u.race]||{icon:'?',label:'?'};
+      return `<div class="panel" style="border-color:#c8a84b44">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="font-size:32px">${u.avatar||cls.icon}</div>
+          <div style="flex:1">
+            <div style="font-family:'Cinzel',serif;font-size:14px">${u.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${cls.icon} ${cls.label} · ${race.icon} ${race.label} · Inscrit le ${new Date(u.createdAt).toLocaleDateString('fr-FR')}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-gold btn-sm" onclick="approveUser('${u.id}')">✅ Valider</button>
+            <button class="btn-danger btn-sm" onclick="rejectUser('${u.id}')">❌ Rejeter</button>
+          </div>
+        </div>
+      </div>`;}).join('')}
+  </div>`;
+}
+async function approveUser(uid){DB.users[uid].status='active';await dbSave();notify(`Compte validé ! ✅`,'#50a040');renderMain();}
+async function rejectUser(uid){const n=DB.users[uid]?.name;delete DB.users[uid];await dbSave();notify(`Compte de ${n} rejeté.`,'#c04030');renderMain();}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN: REQUESTS
+// ════════════════════════════════════════════════════════════
+function renderAdminRequests(){
+  const reqs=DB.requests.sort((a,b)=>(a.status==='pending'?-1:1)||b.createdAt-a.createdAt);
+  return `<div style="display:flex;flex-direction:column;gap:10px">
+    ${reqs.length===0?`<div class="panel" style="text-align:center;padding:28px;color:var(--muted)">Aucune demande.</div>`:''}
+    ${reqs.map(r=>`<div class="panel" style="border-color:${r.status==='pending'?'#c8a84b44':'var(--border)'}">
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:8px">
+        <div><span style="font-family:'Cinzel',serif;font-size:12px">${r.userName}</span><span style="color:var(--muted);font-size:12px"> — </span><span style="color:var(--gold);font-size:13px">${r.questLabel}</span></div>
+        <div style="display:flex;gap:5px;flex-shrink:0"><span class="xp-badge">+${r.xp} XP</span><span class="badge badge-${r.status}">${r.status==='pending'?'⏳':r.status==='approved'?'✅':'❌'}</span></div>
+      </div>
+      ${r.note?`<div style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:8px">"${r.note}"</div>`:''}
+      ${r.status==='pending'?`<div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="an-${r.id}" placeholder="Note admin (optionnel)" style="flex:1;min-width:100px"/>
+        <button class="btn-gold btn-sm" onclick="adminDecide('${r.id}',true)">✅ Approuver</button>
+        <button class="btn-danger btn-sm" onclick="adminDecide('${r.id}',false)">❌ Refuser</button>
+      </div>`:''}
+      ${r.adminNote?`<div style="font-size:11px;color:var(--muted);margin-top:4px">Note : ${r.adminNote}</div>`:''}
+    </div>`).join('')}
+  </div>`;
+}
+async function adminDecide(reqId,approved){
+  const req=DB.requests.find(r=>r.id===reqId);if(!req)return;
+  const note=document.getElementById('an-'+reqId)?.value||'';
+  req.status=approved?'approved':'rejected';req.adminNote=note;
+  if(approved){
+    const u=DB.users[req.userId];
+    if(u){const nxp=u.xp+req.xp;u.statPoints=Math.max(0,(u.statPoints||0)+(statPts(nxp)-statPts(u.xp)));u.xp=nxp;}
+    notify(`+${req.xp} XP accordé à ${req.userName} !`,'#50a040');
+  }else notify('Demande refusée.','#c04030');
+  await dbSave();renderMain();
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN: PLAYERS
+// ════════════════════════════════════════════════════════════
+function renderAdminPlayers(){
+  const players=Object.values(DB.users).filter(u=>u.role!=='admin').sort((a,b)=>b.xp-a.xp);
+  return `<div style="display:flex;flex-direction:column;gap:8px">
+    ${players.map((p,i)=>{
+      const cls=CLASSES[p.class]||{color:'#888',icon:'?',label:'?'};
+      const {l,pct}=getLvlProg(p.xp);
+      const sColor={active:'var(--green)',pending:'#8080c0',banned:'var(--red)'}[p.status];
+      return `<div class="panel" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="color:var(--muted);font-size:11px;width:20px">${i+1}</span>
+        <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid ${cls.color}44;background:#150f08;flex-shrink:0">${p.avatar||cls.icon}</div>
+        <div style="flex:1;min-width:100px">
+          <div style="font-family:'Cinzel',serif;font-size:11px;margin-bottom:2px">${p.name} <span style="font-size:10px;color:${sColor}">[${p.status}]</span></div>
+          <div style="font-size:10px;color:${cls.color}">${cls.label} · Niv.${l} · ${p.xp.toLocaleString()} XP</div>
+        </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn-ghost btn-sm" onclick="openAdminEdit('${p.id}')">✏️</button>
+          <button class="btn-gold btn-sm" onclick="openAdminXP('${p.id}')">✨ XP</button>
+          ${p.status!=='banned'?`<button class="btn-danger btn-sm" onclick="banPlayer('${p.id}')">🔨 Ban</button>`:
+            `<button class="btn-ghost btn-sm" onclick="unbanPlayer('${p.id}')">✅ Débannir</button>`}
+        </div>
+      </div>`;}).join('')}
+  </div>`;
+}
+function openAdminEdit(uid){
+  const u=DB.users[uid];if(!u)return;
+  document.getElementById('modal-box').innerHTML=`
+    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:16px">✏️ Éditer — ${u.name}</div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">PSEUDO</div><input id="eu-n" value="${u.name}"/></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">MOT DE PASSE</div><input id="eu-p" placeholder="Laisser vide pour ne pas changer"/></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">AVATAR</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          ${AVATARS.map(a=>`<div onclick="selectAvatar(this,'${a}')" data-av="${a}" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:2px solid ${u.avatar===a?'var(--gold)':'var(--border)'};background:${u.avatar===a?'#3a2000':'#150f08'}">${a}</div>`).join('')}
+        </div><input id="eu-av" value="${u.avatar||''}" style="display:none"/>
+      </div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">CLASSE (admin peut changer)</div>
+        <select id="eu-cl">${Object.entries(CLASSES).map(([k,c])=>`<option value="${k}"${u.class===k?' selected':''}>${c.icon} ${c.label}</option>`).join('')}</select></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn-ghost" style="flex:1" onclick="closeModal()">Annuler</button>
+        <button class="btn-gold" style="flex:2" onclick="saveAdminEdit('${uid}')">Sauvegarder</button>
+      </div>
+    </div>`;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function selectAvatar(el,a){
+  document.querySelectorAll('[data-av]').forEach(x=>{x.style.borderColor='var(--border)';x.style.background='#150f08';});
+  el.style.borderColor='var(--gold)';el.style.background='#3a2000';
+  document.getElementById('eu-av').value=a;
+}
+async function saveAdminEdit(uid){
+  const u=DB.users[uid];if(!u)return;
+  const n=document.getElementById('eu-n').value.trim();
+  const p=document.getElementById('eu-p').value;
+  const av=document.getElementById('eu-av').value;
+  const cl=document.getElementById('eu-cl').value;
+  if(n)u.name=n;if(p.length>=4)u.password=p;if(av)u.avatar=av;if(cl)u.class=cl;
+  await dbSave();notify('Profil mis à jour !','#c8a84b');closeModal();renderMain();
+}
+function openAdminXP(uid){
+  const u=DB.users[uid];if(!u)return;
+  document.getElementById('modal-box').innerHTML=`
+    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:16px">✨ Modifier XP — ${u.name} (${u.xp.toLocaleString()} XP)</div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">ACTION</div>
+        <select id="xp-t"><option value="add">➕ Ajouter (récompense)</option><option value="remove">➖ Retirer (sanction)</option><option value="set">⚙️ Définir valeur exacte</option></select></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">MONTANT</div><input id="xp-a" type="number" min="1" placeholder="Montant XP"/></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:1px">RAISON</div><input id="xp-r" placeholder="Raison (optionnel)"/></div>
+      <div style="display:flex;gap:8px"><button class="btn-ghost" style="flex:1" onclick="closeModal()">Annuler</button><button class="btn-gold" style="flex:2" onclick="applyAdminXP('${uid}')">Appliquer</button></div>
+    </div>`;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+async function applyAdminXP(uid){
+  const u=DB.users[uid];if(!u)return;
+  const t=document.getElementById('xp-t').value;const a=parseInt(document.getElementById('xp-a').value)||0;
+  if(a<=0)return notify('Montant invalide.','#c04030');
+  const old=u.xp;
+  if(t==='add')u.xp=old+a;else if(t==='remove')u.xp=Math.max(0,old-a);else u.xp=a;
+  u.statPoints=Math.max(0,(u.statPoints||0)+(statPts(u.xp)-statPts(old)));
+  await dbSave();notify(`XP modifié : ${old} → ${u.xp}`,'#c8a84b');closeModal();renderMain();
+}
+async function banPlayer(uid){DB.users[uid].status='banned';await dbSave();notify('Joueur banni.','#c04030');renderMain();}
+async function unbanPlayer(uid){DB.users[uid].status='active';await dbSave();notify('Joueur débanni.','#50a040');renderMain();}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN: GROUPS
+// ════════════════════════════════════════════════════════════
+function renderAdminGroups(){
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  const g=DB.groups;
+  const active=Object.values(DB.users).filter(u=>u.status==='active'&&u.role!=='admin');
+
+  const playerOpts=`<option value="">— Aucun —</option>${active.map(p=>`<option value="${p.id}">${p.avatar||'?'} ${p.name}</option>`).join('')}`;
+
+  return `<div style="display:flex;flex-direction:column;gap:14px">
+    <!-- Maître de Guilde -->
+    <div class="panel" style="border-color:#c8a84b55">
+      <div class="ptitle" style="color:var(--gold)">⚜️ Maître de Guilde (+30% XP)</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="gm-sel" style="flex:1">${playerOpts.replace(`value="${g.guildMaster||''}"`,`value="${g.guildMaster||''}" selected`)}</select>
+        <button class="btn-gold btn-sm" onclick="setGuildMaster()">Définir</button>
+      </div>
+      ${g.guildMaster?`<div style="font-size:12px;color:var(--gold);margin-top:8px">Actuel : ${DB.users[g.guildMaster]?.name||'?'}</div>`:''}
+    </div>
+
+    <!-- Noblesse -->
+    <div class="panel" style="border-color:#c8a84b44">
+      <div class="ptitle" style="color:#c8a84b">👑 Noblesse du Royaume</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <select id="noble-p" style="flex:1">${playerOpts}</select>
+        <select id="noble-r" style="width:auto;padding:8px">
+          ${Object.entries(NOBLE_RANKS).map(([k,r])=>`<option value="${k}">${r.icon} ${r.label}</option>`).join('')}
+        </select>
+        <button class="btn-gold btn-sm" onclick="adminAddNoble()">Ajouter</button>
+      </div>
+      ${Object.entries(g.nobles||{}).map(([id,rank])=>{const p=DB.users[id];const r=NOBLE_RANKS[rank];return p?`
+        <div class="quest-row">
+          <span style="font-size:18px">${p.avatar||'?'}</span>
+          <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+          <span class="badge badge-noble">${r?.icon} ${r?.label}</span>
+          <button class="btn-danger btn-sm" onclick="adminRemoveNoble('${id}')">✕</button>
+        </div>`:''}).join('')}
+    </div>
+
+    <!-- Ordre de Lumière -->
+    <div class="panel" style="border-color:#8080d055">
+      <div class="ptitle" style="color:#b0b0f0">✨ Ordre de Lumière (+20% XP)</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <select id="lum-p" style="flex:1">${playerOpts}</select>
+        <button class="btn-ghost btn-sm" onclick="adminAddGroup('lumiere','lum-p')">Ajouter</button>
+      </div>
+      ${(g.lumiere||[]).map(id=>{const p=DB.users[id];return p?`
+        <div class="quest-row">
+          <span style="font-size:18px">${p.avatar||'?'}</span>
+          <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+          <button class="btn-danger btn-sm" onclick="adminRemoveGroup('lumiere','${id}')">✕</button>
+        </div>`:''}).join('')}
+    </div>
+
+    <!-- Disciples des Ténèbres -->
+    <div class="panel" style="border-color:#80208055">
+      <div class="ptitle" style="color:#d080d0">🌑 Disciples des Ténèbres (+20% XP)</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <select id="ten-p" style="flex:1">${playerOpts}</select>
+        <button class="btn-ghost btn-sm" onclick="adminAddGroup('tenebres','ten-p')">Ajouter</button>
+      </div>
+      ${(g.tenebres||[]).map(id=>{const p=DB.users[id];return p?`
+        <div class="quest-row">
+          <span style="font-size:18px">${p.avatar||'?'}</span>
+          <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+          <button class="btn-danger btn-sm" onclick="adminRemoveGroup('tenebres','${id}')">✕</button>
+        </div>`:''}).join('')}
+    </div>
+  </div>`;
+}
+async function setGuildMaster(){
+  const id=document.getElementById('gm-sel').value;
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  DB.groups.guildMaster=id||null;await dbSave();notify('Maître de Guilde défini !','#c8a84b');renderMain();
+}
+async function adminAddNoble(){
+  const pid=document.getElementById('noble-p').value;const rank=document.getElementById('noble-r').value;
+  if(!pid)return notify('Sélectionne un joueur.','#c04030');
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  if(!DB.groups.nobles)DB.groups.nobles={};
+  DB.groups.nobles[pid]=rank;await dbSave();notify('Noble ajouté !','#c8a84b');renderMain();
+}
+async function adminRemoveNoble(uid){
+  delete DB.groups.nobles[uid];await dbSave();notify('Noble retiré.','#c04030');renderMain();
+}
+async function adminAddGroup(grp,selId){
+  const pid=document.getElementById(selId).value;if(!pid)return notify('Sélectionne un joueur.','#c04030');
+  if(!DB.groups[grp])DB.groups[grp]=[];
+  if(DB.groups[grp].includes(pid))return notify('Déjà membre.','#c04030');
+  DB.groups[grp].push(pid);await dbSave();notify('Membre ajouté !','#c8a84b');renderMain();
+}
+async function adminRemoveGroup(grp,uid){
+  DB.groups[grp]=(DB.groups[grp]||[]).filter(id=>id!==uid);
+  await dbSave();notify('Membre retiré.','#c04030');renderMain();
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN: ELECTION
+// ════════════════════════════════════════════════════════════
+function renderAdminElection(){
+  const el=DB.election;const users=DB.users;
+  const counts={};Object.values(el.votes||{}).forEach(c=>{counts[c]=(counts[c]||0)+1;});
+  return `
+    <div class="panel" style="margin-bottom:14px;border-color:#c8a84b44">
+      <div class="ptitle">🗳️ Gestion des Élections — Maître de Guilde</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Phase : <span style="color:var(--gold);font-family:'Cinzel',serif">${{idle:'En attente',nominate:'Candidatures',vote:'Vote'}[el.phase]}</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-gold btn-sm" onclick="adminStartEl()">🗳️ Lancer une élection</button>
+        <button class="btn-ghost btn-sm" onclick="adminCloseEl()">⚡ Clôturer (désigner gagnant)</button>
+        <button class="btn-danger btn-sm" onclick="adminResetEl()">🔄 Réinitialiser</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Candidats & Votes</div>
+      ${(el.candidates||[]).length===0?`<div style="color:var(--muted);font-size:13px">Aucun candidat.</div>`:''}
+      ${(el.candidates||[]).map(cid=>{const p=users[cid];return p?`
+        <div class="quest-row">
+          <span style="font-size:18px">${p.avatar||'?'}</span>
+          <div style="flex:1;font-family:'Cinzel',serif;font-size:12px">${p.name}</div>
+          <span style="font-family:'Cinzel',serif;color:var(--gold)">${counts[cid]||0} vote(s)</span>
+        </div>`:''}).join('')}
+    </div>`;
+}
+async function adminStartEl(){
+  const el=DB.election;el.phase='nominate';el.nominateEnd=Date.now()+3*864e5;el.candidates=[];el.votes={};
+  await dbSave();notify('Candidatures ouvertes !','#c8a84b');renderMain();
+}
+async function adminCloseEl(){
+  const el=DB.election;const counts={};
+  Object.values(el.votes||{}).forEach(c=>{counts[c]=(counts[c]||0)+1;});
+  let w=null,mx=0;Object.entries(counts).forEach(([c,n])=>{if(n>mx){mx=n;w=c;}});
+  el.mayorId=w;el.mayorEnd=Date.now()+30*864e5;el.phase='idle';el.lastElection=Date.now();
+  if(!DB.groups)DB.groups={guildMaster:null,nobles:{},lumiere:[],tenebres:[]};
+  DB.groups.guildMaster=w;
+  await dbSave();
+  notify(w?`👑 ${DB.users[w]?.name} élu Maître de Guilde !`:'Aucun gagnant.','#c8a84b');renderMain();
+}
+async function adminResetEl(){
+  DB.election={votes:{},candidates:[],mayorId:null,mayorEnd:0,lastElection:0,phase:'idle'};
+  await dbSave();notify('Élection réinitialisée.','#c8a84b');renderMain();
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUEST INTERACTIONS
+// ════════════════════════════════════════════════════════════
+function openReqModal(qid,label,xp){
+  pendingRequest={id:qid,label,xp};
+  document.getElementById('modal-box').innerHTML=`
+    <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:6px">${xp>=1000?'👑':'🏆'} Demande de validation</div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:14px">${label}</div>
+    <textarea id="req-note" rows="4" placeholder="Décris ta réussite…" style="margin-bottom:14px"></textarea>
+    <div style="display:flex;gap:8px">
+      <button class="btn-ghost" style="flex:1" onclick="closeModal()">Annuler</button>
+      <button class="btn-gold" style="flex:2" onclick="submitReq()">Envoyer (+${xp} XP)</button>
+    </div>`;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+async function submitReq(){
+  const u=getUser();const note=document.getElementById('req-note').value;
+  DB.requests.unshift({id:'req_'+Date.now(),userId:u.id,userName:u.name,
+    questId:pendingRequest.id,questLabel:pendingRequest.label,
+    xp:pendingRequest.xp,note,status:'pending',createdAt:Date.now()});
+  await dbSave();notify('Demande envoyée ! ⚔️','#c8a84b');closeModal();renderMain();
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.add('hidden');
+  document.getElementById('modal-box').innerHTML='';
+  pendingRequest=null;
+}
+
+// ════════════════════════════════════════════════════════════
+//  ATTACH EVENTS
+// ════════════════════════════════════════════════════════════
+function attachAll(){
+  document.querySelectorAll('.chk').forEach(el=>{
+    if(el.classList.contains('disabled'))return;
+    el.onclick=async()=>{
+      const u=DB.users[currentUserId];
+      const today=todayKey();const week=weekKey();
+      const qid=el.dataset.qid;const xp=parseInt(el.dataset.xp);const type=el.dataset.type;
+      const logKey=type==='spirit'?week:today;
+      const log=u.dailyLog?.[logKey]||{};
+      const wasOn=!!log[qid];
+
+      // Limit checks
+      const dailyLog=u.dailyLog?.[today]||{};
+      if(type==='daily'&&!wasOn&&DAILY.filter(q=>dailyLog[q.id]).length>=3)
+        return notify('Maximum 3 quêtes quotidiennes par jour !','#c04030');
+      if(type==='interm'&&!wasOn&&INTERM.some(q=>dailyLog[q.id]))
+        return notify('1 quête intermédiaire par jour maximum !','#c04030');
+      if(type==='spirit'&&!wasOn&&SPIRIT.some(q=>(u.dailyLog?.[week]||{})[q.id]))
+        return notify('1 quête spirituelle par semaine maximum !','#c04030');
+
+      const newLog={...log,[qid]:!wasOn};
+      u.dailyLog={...u.dailyLog,[logKey]:newLog};
+
+      // XP with bonus (malus if pvp lost)
+      let earnedXP=wasOn?-xp:xp;
+      if(!wasOn){
+        earnedXP=applyBonus(xp,currentUserId);
+        if(u.pvpMalus&&u.pvpMalus>Date.now())earnedXP=Math.round(earnedXP*0.85);
+      }
+      const newXP=Math.max(0,u.xp+earnedXP);
+      u.statPoints=Math.max(0,(u.statPoints||0)+(statPts(newXP)-statPts(u.xp)));
+      u.xp=newXP;
+      await dbSave();
+      notify(wasOn?`−${xp} XP (décoché)`:`+${earnedXP} XP ! 🎉${u.pvpMalus&&u.pvpMalus>Date.now()?' (malus PvP -15%)':''}`,wasOn?'#c04030':'#c8a84b');
+      renderMain();
+    };
+  });
+}
+
+async function addStat(s){
+  const u=DB.users[currentUserId];
+  if((u.statPoints||0)<=0)return notify('Aucun point disponible !','#c04030');
+  u.extraStats[s]=(u.extraStats[s]||0)+1;u.statPoints=(u.statPoints||0)-1;
+  await dbSave();notify(`+1 en ${STAT_LABELS[s]} !`,CLASSES[u.class]?.color||'#c8a84b');renderMain();
+}
+</script>
+</body>
+</html>
